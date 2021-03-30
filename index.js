@@ -1,13 +1,20 @@
-const Fastify = require('fastify')
+require('dotenv').config()
+const buildApp = require('./src/app')
+const config = require('config')
 
-const buildApp = (options = {}) => {
-    const app = Fastify(options)
+const startApp = async () => {
+    const appOptions = {
+        logger: true
+    }
+    const app = await buildApp(appOptions)
 
-    app.get('/', async (request, reply) => {
-        reply.send('OK')
-    })
-
-    return app
+    try {
+        app.listen(config.get('port'), config.get('hostname'))
+        console.log(`app is listening on port ${config.get('port')}`)
+    }
+    catch (error) {
+        throw error
+    }
 }
 
-module.exports = buildApp
+startApp()
